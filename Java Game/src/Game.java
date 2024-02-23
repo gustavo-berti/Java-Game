@@ -1,5 +1,6 @@
 import javax.swing.JPanel;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
 import java.awt.RenderingHints;
@@ -9,8 +10,10 @@ import java.awt.event.KeyListener;
 @SuppressWarnings("serial")
 public class Game extends JPanel{
 
-	Plataform plataform = new Plataform();
+	Plataform plataform = new Plataform(0, 400, 720, 50);
+	//Plataform plat1 = new Plataform(50, 325, 100, 20);
 	Player player = new Player(this);
+	Enemy enemy = new Enemy(this);
 	
 	public Game(){
 		addKeyListener(new KeyListener() {
@@ -37,6 +40,12 @@ public class Game extends JPanel{
 	
 	private void move(){
 		player.move();
+		enemy.move();
+	}
+	
+	public void gameOver() {
+		JOptionPane.showMessageDialog(this, "Game Over", "Game Over", JOptionPane.YES_NO_OPTION);
+		System.exit(ABORT);
 	}
 	
 	@Override
@@ -45,7 +54,9 @@ public class Game extends JPanel{
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		plataform.paint(g2d);
+		//plat1.paint(g2d);
 		player.paint(g2d);
+		enemy.paint(g2d);
 		
 	}
 	
