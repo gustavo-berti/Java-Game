@@ -8,13 +8,14 @@ public class Player {
 	
 	Timer timer = new Timer();
 	Color color = new Color(70,130,180);
-	private static final int vertex = 50;
+	static final int vertex = 50;
 	int y = 325;
 	int currentY = y;
 	int ya = 0;
 	int x = 360;
 	int xa = 0;
 	private Game game;
+	public boolean playerIsRight = true;
 	
 	public Player(Game game) {
 		this.game = game;
@@ -34,21 +35,21 @@ public class Player {
 		if(y == currentY-vertex-50) {
 			ya = 0;
 		}
-		if(collision()) {
-			y = game.plataform.getTopY() - vertex;
+		
+	}
+	
+	public void collision(Rectangle rect) {
+		if(rect.intersects(getBounds()) && rect.getMinY() > y) {
+			y = (int) (rect.getY() - vertex);
 			currentY= y;
+			ya = 0;
+		 }
+		if(rect.intersects(getBounds()) && rect.getMinY() < y) {
+			y = (int) (rect.getY()+rect.height);
+			currentY= y;
+			ya = 0;
 		}
-		if(enemyCollision()) {
-			game.gameOver();
-		}
-	}
-	
-	private boolean collision() {
-		return game.plataform.getBounds().intersects(getBounds());
-	}
-	
-	private boolean enemyCollision() {
-		return game.enemy.getBounds().intersects(getBounds());
+			 
 	}
 	
 	public void keyRealesed(KeyEvent e) {
@@ -58,13 +59,25 @@ public class Player {
 	public void keyPressed(KeyEvent e){
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 			xa = -1;
+			playerIsRight = false;
 		}
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			xa = 1;
+			playerIsRight = true;
 		}
 		if (e.getKeyCode() == KeyEvent.VK_UP && currentY == y) {
 			currentY = y;
 			ya = -2;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_X) {
+			if(game.bullet.status==false) {
+				if(playerIsRight)
+					game.bullet.setX(x+vertex);
+				if(playerIsRight == false)
+					game.bullet.setX(x-game.bullet.width);
+					game.bullet.setY(y+vertex/2);
+					game.bullet.status = true;
+			}
 		}
 	}
 	

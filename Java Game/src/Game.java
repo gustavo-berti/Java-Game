@@ -11,9 +11,11 @@ import java.awt.event.KeyListener;
 public class Game extends JPanel{
 
 	Plataform plataform = new Plataform(0, 400, 720, 50);
-	//Plataform plat1 = new Plataform(50, 325, 100, 20);
+	Plataform plat1 = new Plataform(125, 325, 150, 10);
+	Plataform plat2 = new Plataform(400, 275, 150, 10);
 	Player player = new Player(this);
 	Enemy enemy = new Enemy(this);
+	Bullet bullet = new Bullet(this);
 	
 	public Game(){
 		addKeyListener(new KeyListener() {
@@ -40,7 +42,15 @@ public class Game extends JPanel{
 	
 	private void move(){
 		player.move();
-		enemy.move();
+		if(enemy.status)
+			enemy.move();
+		if(bullet.status)
+			bullet.move();
+		player.collision(plataform.getBounds());
+		player.collision(plat1.getBounds());
+		player.collision(plat2.getBounds());
+		if(enemy.status)
+			enemy.collision(plataform.getBounds());
 	}
 	
 	public void gameOver() {
@@ -48,16 +58,20 @@ public class Game extends JPanel{
 		System.exit(ABORT);
 	}
 	
+	@SuppressWarnings("static-access")
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		plataform.paint(g2d);
-		//plat1.paint(g2d);
+		plat1.paint(g2d);
+		plat2.paint(g2d);
 		player.paint(g2d);
-		enemy.paint(g2d);
-		
+		if(enemy.status)
+			enemy.paint(g2d);
+		if(bullet.status)
+			bullet.paint(g2d);
 	}
 	
 	public static void main(String[] args) throws InterruptedException {
@@ -69,11 +83,12 @@ public class Game extends JPanel{
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		while(true) {
+			game.enemy.respawn();
 			game.move();
 			game.repaint();
 			Thread.sleep(5);
 		}
 	
 	}
-	
+
 }
